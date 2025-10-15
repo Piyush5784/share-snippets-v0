@@ -34,7 +34,6 @@ out.npmrc
 
 # misc
 .DS_Store
-config.ts
 *.pem
 
 # debug

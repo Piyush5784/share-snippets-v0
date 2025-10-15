@@ -1,5 +1,6 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
+import { NEXTAUTH_SECRET } from "./lib/config";
 
 const publicRoutes = ["/pages/login", "/pages/register", "/"];
 
@@ -14,7 +15,7 @@ export async function middleware(req: NextRequest) {
 
   const token = await getToken({
     req,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: NEXTAUTH_SECRET,
   });
 
   if (!token) {
