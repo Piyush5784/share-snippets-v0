@@ -19,7 +19,7 @@ const TryNow = () => {
         {/* Animated background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-200/10 via-transparent to-blue-400/10 dark:from-blue-500/5 dark:to-blue-600/5 animate-pulse" />
 
-        <BackgroundBeamsWithCollision>
+        <BackgroundBeamsWithCollision className="h-screen">
           <div className="flex items-center justify-center flex-col bg-none">
             {/* Floating particles */}
             {[...Array(8)].map((_, i) => (
@@ -51,7 +51,7 @@ const TryNow = () => {
               transition={{ delay: 0.2 }}
               className="relative z-10"
             >
-              <div className="group relative inline-flex h-11 items-center justify-center gap-2 overflow-hidden rounded-full border-2 border-blue-400/20 dark:border-blue-500/30 bg-gradient-to-r from-blue-200/10 to-blue-400/10 dark:from-blue-500/10 dark:to-blue-600/10 px-8 py-2 font-medium text-blue-900 dark:text-white transition-all hover:border-blue-400/50 hover:shadow-lg hover:shadow-blue-500/20">
+              <div className="group relative inline-flex md:h-11 items-center justify-center gap-2 overflow-hidden rounded-full border-2 border-blue-400/20 dark:border-blue-500/30 bg-gradient-to-r from-blue-200/10 to-blue-400/10 dark:from-blue-500/10 dark:to-blue-600/10 px-8 py-2 font-medium text-blue-900 dark:text-white transition-all hover:border-blue-400/50 hover:shadow-lg hover:shadow-blue-500/20 h-7 w-[270px]  ">
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-blue-200/20 via-blue-400/20 to-blue-300/20 dark:from-blue-500/20 dark:to-blue-500/20"
                   animate={{

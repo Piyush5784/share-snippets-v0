@@ -543,7 +543,7 @@ const FeaturesSection: React.FC = () => {
             <FeatureCard
               key={feature.title}
               delay={0.2 + idx * 0.1}
-              className="md:col-span-1"
+              className="md:col-span-1 sm:max-h-[200px] md:max-h-auto"
             >
               <SmallFeatureCard {...feature}>
                 {feature.content}
