@@ -13,6 +13,9 @@ config.ts
 .vscode-test.mjs
 
 *.vsix
+# Next.js build/cache
+.next/
+
 
 out
 node_modules
