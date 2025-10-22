@@ -120,7 +120,7 @@ export default function LoginPage() {
             Login with Google
           </Button>
 
-          <Button
+          {/* <Button
             type="button"
             variant="outline"
             className="w-full"
@@ -132,7 +132,7 @@ export default function LoginPage() {
               <FaGithub className="" />
               Login with Github
             </div>
-          </Button>
+          </Button> */}
         </form>
 
         <div className="text-center text-sm">
