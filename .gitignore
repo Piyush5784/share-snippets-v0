@@ -7,7 +7,6 @@
 
 .npmrc
 DEPLOYMENT.md
-config.ts
 
 .yarn/*
 .vscode-test.mjs
