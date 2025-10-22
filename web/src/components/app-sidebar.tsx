@@ -102,7 +102,7 @@ const data = {
       // ],
     },
     {
-      title: "Documentation",
+      title: "How to use?",
       url: "/pages/snippets/documentation",
       icon: BookOpen,
       // items: [
