@@ -1,4 +1,5 @@
 import { RotateCcw, Search } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 const VideoElement = () => {
@@ -15,18 +16,21 @@ const VideoElement = () => {
             <div className="bg-gray-100 dark:bg-[#222222] w-full max-w-sm py-1 rounded-lg px-3 flex flex-row gap-2 items-center text-sm">
               <Search className="text-black dark:text-white" />
               <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center text-black dark:text-white">
-                http://share-snippets.com
+                http://share-snippets.site
               </span>
               <RotateCcw className="text-black dark:text-white" />
             </div>
           </div>
         </div>
         <div className="relative w-full">
-          <video
-            src="https://res.cloudinary.com/dynfrkted/video/upload/v1752901775/464699431-88acb765-d329-4908-90a2-6744473fa11e_online-video-cutter.com_wvpnur.mp4"
-            controls
+          <Image
+            alt="Hero-image"
+            height={800}
+            width={800}
+            src="/image.png"
+            // controls
             className="w-full h-full"
-          ></video>
+          />
         </div>
       </div>
     </div>

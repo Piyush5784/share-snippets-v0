@@ -1,0 +1,51 @@
+# VS Code Extension Package Ignore File
+# Files and directories to exclude from the .vsix package
+
+# Source files (only compiled output should be included)
+src/
+tsconfig.json
+eslint.config.mjs
+
+# Development files
+.vscode/
+.vscode-test/
+*.test.js
+*.test.js.map
+
+# Build artifacts (except the main compiled files)
+out/test/
+
+# Package manager files
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Git files
+.git/
+.gitignore
+
+# Documentation (optional - remove if you want to include)
+README.md
+DEPLOYMENT.md
+deploy.sh
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

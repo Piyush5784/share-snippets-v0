@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
 import axios from "axios";
 
-const BACKEND_URL = "http://localhost:3000";
+const BACKEND_URL = "https://www.share-snippets.site";
+
 const name = "extension_share_snippets";
 type snippet = {
   title: string;
@@ -18,6 +19,7 @@ export async function activate(context: vscode.ExtensionContext) {
   if (isFirstTime) {
     await context.globalState.update("extensionInstalled", true);
   }
+  ``;
 
   if (!isFirstTime) {
     await context.secrets.delete("ApiKey");
@@ -26,7 +28,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const types = ["All snippets", "Private snippets"];
 
   const disposable = vscode.commands.registerCommand(
-    "get-snippets",
+    "share-snippets.getSnippets",
     async () => {
       const snippetsType = await vscode.window.showQuickPick(types, {
         placeHolder: "Select snippets type",
@@ -39,7 +41,10 @@ export async function activate(context: vscode.ExtensionContext) {
       let token = await context.secrets.get("ApiKey");
 
       if (!token) {
-        await handleLogin(context);
+        const loginSuccess = await handleLogin(context);
+        if (!loginSuccess) {
+          return;
+        }
       }
 
       token = await context.secrets.get("ApiKey");
@@ -48,7 +53,7 @@ export async function activate(context: vscode.ExtensionContext) {
         await fetchSnippet(snippetsType, token!, types);
       } catch (error) {
         console.log(error);
-        if (axios.isAxiosError(error) && error.response?.status === 401) {
+        if (error) {
           await context.secrets.delete("ApiKey");
           vscode.window.showErrorMessage(
             "Invalid API key. Please login again."
@@ -126,7 +131,7 @@ async function fetchSnippet(
 
   const selectedSnippet = snippets.find((s) => s.title === snippetPick.label);
   if (selectedSnippet) {
-    editor.edit((edit) => {
+    editor.edit((edit: vscode.TextEditorEdit) => {
       const position = editor.selection.active;
       edit.insert(position, selectedSnippet.code);
     });

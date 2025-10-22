@@ -5,11 +5,17 @@
 /.pnp
 .pnp.*
 
-.next
 .npmrc
+DEPLOYMENT.md
 
 .yarn/*
-.next
+.vscode-test.mjs
+
+*.vsix
+node_modules
+
+
+deploy.sh
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
@@ -21,16 +27,13 @@
 # next.js
 /.next/
 /out/
+# next.js
+/.next/
+/out/
 lenovo
 lenovo.pub
 .vscode
-node_modules
 out.npmrc
-.env
-.vscodeignore
-
-# production
-/build
 
 # misc
 .DS_Store

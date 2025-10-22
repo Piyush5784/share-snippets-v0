@@ -40,7 +40,7 @@ exports.activate = activate;
 exports.handleLogin = handleLogin;
 const vscode = __importStar(require("vscode"));
 const axios_1 = __importDefault(require("axios"));
-const BACKEND_URL = "http://localhost:3000";
+const BACKEND_URL = "https://www.share-snippets.site";
 const name = "extension_share_snippets";
 async function activate(context) {
     const isFirstTime = !context.globalState.get(name);
@@ -48,11 +48,12 @@ async function activate(context) {
     if (isFirstTime) {
         await context.globalState.update("extensionInstalled", true);
     }
+    ``;
     if (!isFirstTime) {
         await context.secrets.delete("ApiKey");
     }
     const types = ["All snippets", "Private snippets"];
-    const disposable = vscode.commands.registerCommand("get-snippets", async () => {
+    const disposable = vscode.commands.registerCommand("share-snippets.getSnippets", async () => {
         const snippetsType = await vscode.window.showQuickPick(types, {
             placeHolder: "Select snippets type",
         });
@@ -61,7 +62,10 @@ async function activate(context) {
         }
         let token = await context.secrets.get("ApiKey");
         if (!token) {
-            await handleLogin(context);
+            const loginSuccess = await handleLogin(context);
+            if (!loginSuccess) {
+                return;
+            }
         }
         token = await context.secrets.get("ApiKey");
         try {
@@ -69,7 +73,7 @@ async function activate(context) {
         }
         catch (error) {
             console.log(error);
-            if (axios_1.default.isAxiosError(error) && error.response?.status === 401) {
+            if (error) {
                 await context.secrets.delete("ApiKey");
                 vscode.window.showErrorMessage("Invalid API key. Please login again.");
                 await handleLogin(context);
