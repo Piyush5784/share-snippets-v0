@@ -1,5 +1,4 @@
 import { RotateCcw, Search } from "lucide-react";
-import Image from "next/image";
 import React from "react";
 
 const VideoElement = () => {
@@ -23,14 +22,11 @@ const VideoElement = () => {
           </div>
         </div>
         <div className="relative w-full">
-          <Image
-            alt="Hero-image"
-            height={800}
-            width={800}
-            src="/image.png"
-            // controls
+          <video
+            src="https://collection.cloudinary.com/dzf9kamfw/2b3455a1f646bc831f477fcd8bafb63a"
+            controls
             className="w-full h-full"
-          />
+          ></video>
         </div>
       </div>
     </div>

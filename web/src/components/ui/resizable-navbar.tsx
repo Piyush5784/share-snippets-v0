@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
+import { Code, Menu, X } from "lucide-react";
 import {
   motion,
   AnimatePresence,
@@ -235,9 +235,9 @@ export const NavbarLogo = () => {
   return (
     <Link
       href="/"
-      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
+      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black dark:text-white"
     >
-      <Image src="/logo.png" alt="logo" width={30} height={30} />
+      <Code />
       <span className="font-medium text-black dark:text-white">
         Share Snippets
       </span>
