@@ -23,7 +23,7 @@ const VideoElement = () => {
         </div>
         <div className="relative w-full">
           <video
-            src="https://collection.cloudinary.com/dzf9kamfw/2b3455a1f646bc831f477fcd8bafb63a"
+            src="https://res.cloudinary.com/dzf9kamfw/video/upload/v1761135900/cursorful-video-1761135576571_kdidct.mp4"
             controls
             className="w-full h-full"
           ></video>
