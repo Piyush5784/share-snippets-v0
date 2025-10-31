@@ -86,3 +86,20 @@ export const useGetSavedSnippets = () => {
     },
   });
 };
+
+export const useSearchSnippets = (searchQuery: string) => {
+  return useQuery({
+    queryKey: ["search_snippets", searchQuery],
+    queryFn: async () => {
+      if (!searchQuery.trim()) {
+        return [] as snippetsType[];
+      }
+      const res = await axios.get(
+        `/api/search-snippets?q=${encodeURIComponent(searchQuery)}`
+      );
+      return res.data.data as snippetsType[];
+    },
+    enabled: !!searchQuery.trim(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};

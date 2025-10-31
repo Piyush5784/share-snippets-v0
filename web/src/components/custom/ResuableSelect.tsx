@@ -16,19 +16,19 @@ const LanguageSelect = ({
   const colors = {
     light: {
       background: "#ffffff",
-      text: "#18181b",
-      border: "#e5e7eb",
-      hoverBorder: "#a1a1aa",
-      selectedBg: "#f3f4f6",
-      hoveredBg: "#f9fafb",
+      text: "#000000",
+      border: "#000000",
+      hoverBorder: "#333333",
+      selectedBg: "#f0f0f0",
+      hoveredBg: "#f8f8f8",
     },
     dark: {
-      background: "#1f2937",
-      text: "#f9fafb",
-      border: "#374151",
-      hoverBorder: "#6b7280",
-      selectedBg: "#374151",
-      hoveredBg: "#4b5563",
+      background: "#000000",
+      text: "#ffffff",
+      border: "#ffffff",
+      hoverBorder: "#cccccc",
+      selectedBg: "#333333",
+      hoveredBg: "#1a1a1a",
     },
   };
 

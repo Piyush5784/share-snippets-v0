@@ -212,7 +212,7 @@ const SnippetForm = ({
                 <LanguageSelect
                   onChange={setLanguage}
                   value={language}
-                  theme={theme == "dark" ? "dark" : "light"}
+                  theme={theme as "dark" | "light"}
                 />
               </div>
             </div>

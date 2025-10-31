@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { CheckIcon, Share2Icon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 export async function shareContent(value: string) {
   if (navigator.share) {
@@ -13,6 +14,7 @@ export async function shareContent(value: string) {
   } else {
     // fallback: copy to clipboard
     await navigator.clipboard.writeText(value);
+    toast.success("Copied");
   }
 }
 

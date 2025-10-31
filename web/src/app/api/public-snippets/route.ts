@@ -19,6 +19,7 @@ export async function GET() {
       where: {
         isPublic: true,
       },
+
       select: {
         id: true,
         title: true,
@@ -44,6 +45,7 @@ export async function GET() {
           },
         },
       },
+      take: 5,
     });
 
     const result = snippets.map((snippet) => ({
