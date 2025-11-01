@@ -11,12 +11,13 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Cross, CrossIcon, LogOut, Trash2, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { LogOut, X } from "lucide-react";
 import { signOut } from "next-auth/react";
 function LogoutDialog() {
   const handleLogout = async () => {
-    return await signOut({ callbackUrl: "/" });
+    await signOut({ callbackUrl: "/" });
+    localStorage.clear();
+    sessionStorage.clear();
   };
 
   return (
@@ -29,7 +30,7 @@ function LogoutDialog() {
           //   "relative z-10 h-8 w-8 text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100"
           // }
         > */}
-        <div className="text-lg p-1 pl-2  peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md text-left  outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0">
+        <div className="text-lg p-1 pl-2  peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md text-left  outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 cursor-pointer">
           <LogOut size={18} />
           Logout
         </div>
@@ -45,10 +46,10 @@ function LogoutDialog() {
         <DialogFooter>
           <DialogClose asChild>
             <Button
-              // type="button"
+              type="button"
               onClick={handleLogout}
-              className="bg-red-600 opacity-100"
-              variant="destructive"
+              className=""
+              variant=""
             >
               Logout
             </Button>

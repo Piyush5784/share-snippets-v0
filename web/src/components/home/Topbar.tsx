@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { ThemeButton } from "../theme-toggle";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const navItems = [
   { name: "Features", link: "#features" },
@@ -22,6 +23,7 @@ const navItems = [
 
 const Topbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { status } = useSession();
 
   return (
     <div className="fixed top-0 w-full z-50">
@@ -34,9 +36,15 @@ const Topbar = () => {
             <NavbarButton variant="secondary">
               <ThemeButton />
             </NavbarButton>
-            <NavbarButton href="/pages/login" variant="primary">
-              Login
-            </NavbarButton>
+            {status == "authenticated" ? (
+              <NavbarButton href="/pages/snippets" variant="primary">
+                Dashboard
+              </NavbarButton>
+            ) : (
+              <NavbarButton href="/pages/login" variant="primary">
+                Login
+              </NavbarButton>
+            )}
             {/* <NavbarButton variant="primary">Book a call</NavbarButton> */}
           </div>
         </NavBody>
