@@ -1,6 +1,6 @@
 "use client";
 import SnippetsList from "@/components/custom/SnippetList";
-import { useGetSavedSnippets, useGetSnippets } from "../query";
+import { useGetSavedSnippets } from "../query";
 
 const Page = () => {
   const { data, isPending, error } = useGetSavedSnippets();
@@ -9,8 +9,8 @@ const Page = () => {
     data?.map((item) => ({
       ...item.snippet,
       user: {
-        ...item.user,
-        image: item.user.image ?? "",
+        ...item.author,
+        image: item?.author?.image ?? undefined,
       },
       isStarred: true,
     })) || [];

@@ -15,6 +15,20 @@ export async function POST(req: Request) {
       });
     }
 
+    const existingSnippet = await prisma.snippets.findFirst({
+      where: {
+        id: snippetId,
+      },
+    });
+
+    if (!existingSnippet) {
+      return ApiResponse({
+        message: "Invalid snippet Id",
+        success: false,
+        status: 404,
+      });
+    }
+
     // Find existing star
     const existingStar = await prisma.starredSnippets.findFirst({
       where: {
@@ -40,6 +54,7 @@ export async function POST(req: Request) {
 
     await prisma.starredSnippets.create({
       data: {
+        authorId: existingSnippet.userId,
         userId: user.id,
         snippetId,
         isStarred: true,
@@ -78,7 +93,7 @@ export async function GET(req: Request) {
         userId: user.id,
       },
       select: {
-        user: {
+        author: {
           select: {
             id: true,
             name: true,

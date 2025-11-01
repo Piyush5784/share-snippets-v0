@@ -7,7 +7,7 @@ export type snippetsType = {
   user: {
     id: string;
     name: string | null;
-    image: string;
+    image: string | undefined;
   };
   isStarred: boolean;
   id: string;
@@ -22,10 +22,10 @@ export type snippetsType = {
 };
 
 export type starredSnippetsType = {
-  user: {
+  author: {
     name: string | null;
     id: string;
-    image: string | null;
+    image: string | undefined;
   };
   isStarred: boolean;
   snippet: {
@@ -81,7 +81,6 @@ export const useGetSavedSnippets = () => {
     queryKey: ["get_saved_snippets"],
     queryFn: async () => {
       const res = await axios.get("/api/snippets/starred");
-      console.log(res.data.data);
       return res.data.data as starredSnippetsType[];
     },
   });

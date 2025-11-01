@@ -45,7 +45,7 @@ export async function GET() {
           },
         },
       },
-      take: 5,
+      take: 10,
     });
 
     const result = snippets.map((snippet) => ({

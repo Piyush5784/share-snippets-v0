@@ -14,7 +14,7 @@ import { useSession } from "next-auth/react";
 import { snippetsType, useSearchSnippets } from "@/app/pages/snippets/query";
 import { Separator } from "../ui/separator";
 import { BACKEND_URL } from "@/lib/config";
-import { ShareButton } from "./ShareButtont";
+import { ExternalLink, ShareButton } from "./ShareButtont";
 import DeleteDialog from "./DeleteDialog";
 import { useSaveCode } from "@/hooks/useCode";
 import SnippetViewDialog from "./ShowSnippetDialog";
@@ -294,7 +294,7 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
                   <div className="flex items-center gap-2 mb-3 pb-3 border-b border-zinc-200 dark:border-zinc-700">
                     <Avatar className="h-6 w-6">
                       <AvatarImage
-                        src={snippet.user.image}
+                        src={snippet.user.image || undefined}
                         alt={snippet.user.name || "User"}
                       />
                       <AvatarFallback className="text-xs">
@@ -392,7 +392,7 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
                         <div className="flex items-center gap-2">
                           <Avatar>
                             <AvatarImage
-                              src={selected.user.image}
+                              src={selected.user.image || undefined}
                               alt={selected.user.name || "User"}
                             />
                             <AvatarFallback>
@@ -439,8 +439,8 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
                           {selected.code && (
                             <CopyButton value={selected.code} />
                           )}
-                          <ShareButton
-                            value={`${BACKEND_URL}/pages/snippet/${selected.id}`}
+                          <ExternalLink
+                            url={`${BACKEND_URL}/pages/snippet/${selected.id}`}
                           />
                           <DeleteDialog
                             show={session.data?.user?.id == selected.user.id}

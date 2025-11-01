@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
-import { CheckIcon, Share2Icon } from "lucide-react";
+import { CheckIcon, ExternalLinkIcon, Share2Icon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export async function shareContent(value: string) {
   if (navigator.share) {
@@ -60,3 +61,23 @@ export function ShareButton({
     </Button>
   );
 }
+
+export const ExternalLink = ({ url }: { url: string }) => {
+  return (
+    <>
+      <Button
+        asChild
+        size="icon"
+        variant="ghost"
+        className={cn(
+          "relative z-10 h-8 w-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100"
+        )}
+      >
+        <Link href={url} target="_blank">
+          {" "}
+          <ExternalLinkIcon />
+        </Link>
+      </Button>
+    </>
+  );
+};
