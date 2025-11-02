@@ -7,7 +7,7 @@ import Select from "react-select";
 const LanguageSelect = ({
   value,
   onChange,
-  theme = "light", // Add theme prop with default value
+  theme = "light",
 }: {
   value: string;
   onChange: (val: string) => void;
@@ -17,18 +17,20 @@ const LanguageSelect = ({
     light: {
       background: "#ffffff",
       text: "#000000",
-      border: "#000000",
-      hoverBorder: "#333333",
-      selectedBg: "#f0f0f0",
-      hoveredBg: "#f8f8f8",
+      border: "#cccccc",
+      hoverBorder: "#888888",
+      selectedBg: "#e0e0e0",
+      hoveredBg: "#f5f5f5",
+      focusBorder: "#000000",
     },
     dark: {
       background: "#000000",
       text: "#ffffff",
-      border: "#ffffff",
-      hoverBorder: "#cccccc",
-      selectedBg: "#333333",
+      border: "#555555",
+      hoverBorder: "#aaaaaa",
+      selectedBg: "#222222",
       hoveredBg: "#1a1a1a",
+      focusBorder: "#ffffff",
     },
   };
 
@@ -43,15 +45,16 @@ const LanguageSelect = ({
         options={monacoLanguagesForReactSelect}
         isSearchable
         styles={{
-          control: (base) => ({
+          control: (base, state) => ({
             ...base,
             width: 140,
             height: 15,
             borderRadius: 6,
             backgroundColor: currentTheme.background,
-            borderColor: currentTheme.border,
-            boxShadow: "none",
-            padding: 0,
+            borderColor: state.isFocused
+              ? currentTheme.focusBorder
+              : currentTheme.border,
+            boxShadow: "none", // remove blue glow
             "&:hover": { borderColor: currentTheme.hoverBorder },
           }),
           menu: (base) => ({
@@ -87,7 +90,6 @@ const LanguageSelect = ({
           singleValue: (base) => ({
             ...base,
             fontSize: 14,
-            padding: 0,
             color: currentTheme.text,
             display: "flex",
             alignItems: "center",
@@ -102,13 +104,15 @@ const LanguageSelect = ({
             color: currentTheme.text,
           }),
         }}
-        theme={(theme) => ({
-          ...theme,
+        theme={(themeObj) => ({
+          ...themeObj,
           borderRadius: 6,
           colors: {
-            ...theme.colors,
-            primary25: currentTheme.selectedBg,
-            primary: currentTheme.hoverBorder,
+            ...themeObj.colors,
+            // Remove all blue tones
+            primary25: currentTheme.hoveredBg,
+            primary50: currentTheme.selectedBg,
+            primary: currentTheme.focusBorder,
             neutral0: currentTheme.background,
             neutral80: currentTheme.text,
           },
