@@ -1,11 +1,14 @@
 import { checkSession } from "@/app/actions/checkUser";
 import { prisma } from "@/lib/db";
 import { ApiResponse } from "@/utils/formatResponse";
+import { NextRequest } from "next/server";
 
 // all logged in user , all public snippets
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const session = await checkSession();
+    const { searchParams } = new URL(req.url);
+    const p = searchParams.get("p") ?? "";
 
     if (!session) {
       return ApiResponse({
@@ -45,7 +48,7 @@ export async function GET() {
           },
         },
       },
-      take: 10,
+      take: 5,
     });
 
     const result = snippets.map((snippet) => ({
