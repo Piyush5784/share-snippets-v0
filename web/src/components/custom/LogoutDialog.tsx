@@ -49,7 +49,7 @@ function LogoutDialog() {
               type="button"
               onClick={handleLogout}
               className=""
-              variant=""
+              variant="default"
             >
               Logout
             </Button>
