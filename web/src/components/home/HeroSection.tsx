@@ -188,10 +188,7 @@ const HeroSection = () => {
                     border-2 border-blue-600 dark:border-blue-600"
                   asChild
                 >
-                  <Link
-                    href="/snippets/new"
-                    className="flex items-center gap-2"
-                  >
+                  <Link href="/pages/login" className="flex items-center gap-2">
                     <span>Create Your First Snippet</span>
                     <motion.span
                       animate={{ x: [0, 5, 0] }}
