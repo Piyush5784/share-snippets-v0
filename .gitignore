@@ -13,6 +13,8 @@ DEPLOYMENT.md
 
 *.vsix
 # Next.js build/cache
+
+temp.ts
 .next/
 
 

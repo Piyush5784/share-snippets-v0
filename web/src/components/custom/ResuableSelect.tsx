@@ -20,7 +20,7 @@ const LanguageSelect = ({
       border: "#cccccc",
       hoverBorder: "#888888",
       selectedBg: "#e0e0e0",
-      hoveredBg: "#f5f5f5",
+
       focusBorder: "#000000",
     },
     dark: {
@@ -29,7 +29,6 @@ const LanguageSelect = ({
       border: "#555555",
       hoverBorder: "#aaaaaa",
       selectedBg: "#222222",
-      hoveredBg: "#1a1a1a",
       focusBorder: "#ffffff",
     },
   };
@@ -80,7 +79,7 @@ const LanguageSelect = ({
             backgroundColor: state.isSelected
               ? currentTheme.selectedBg
               : state.isFocused
-              ? currentTheme.hoveredBg
+              ? currentTheme.selectedBg
               : currentTheme.background,
             color: currentTheme.text,
             display: "flex",
@@ -110,7 +109,6 @@ const LanguageSelect = ({
           colors: {
             ...themeObj.colors,
             // Remove all blue tones
-            primary25: currentTheme.hoveredBg,
             primary50: currentTheme.selectedBg,
             primary: currentTheme.focusBorder,
             neutral0: currentTheme.background,
