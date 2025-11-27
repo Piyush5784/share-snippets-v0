@@ -1,0 +1,69 @@
+{
+  "name": "share-snippets-by-piyush5784",
+  "displayName": "Share Snippets By Piyush5784",
+  "description": "Access and insert code snippets from your Share Snippets collection directly in VS Code",
+  "version": "0.0.5",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "publisher": "Piyush5784",
+  "homepage": "https://marketplace.visualstudio.com/publishers/Piyush5784",
+  "categories": [
+    "Snippets",
+    "Other"
+  ],
+  "keywords": [
+    "snippets",
+    "code",
+    "share",
+    "productivity",
+    "developer-tools"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "share-snippets.getSnippets",
+        "title": "Get Snippets",
+        "category": "Share Snippets"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "share-snippets.getSnippets",
+          "when": "true"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.36.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
+    "webpack": "^5.102.0",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "axios": "^1.13.2"
+  }
+}
