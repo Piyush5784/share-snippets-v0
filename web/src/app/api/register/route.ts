@@ -3,7 +3,9 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { ApiResponse } from "@/utils/formatResponse";
+import jwt from "jsonwebtoken";
 import { registerSchema } from "@/types/zod-schemas";
+import { API_SECRET } from "@/lib/config";
 
 export async function POST(req: Request) {
   try {
@@ -39,6 +41,7 @@ export async function POST(req: Request) {
       data: {
         name,
         email,
+        apiKey: "",
         password: hashedPassword,
       },
     });

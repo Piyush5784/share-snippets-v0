@@ -33,7 +33,9 @@ const LanguageSelect = ({
     },
   };
 
-  const currentTheme = colors[theme];
+  const currentTheme = colors[theme ? "light" : "dark"];
+
+  if (!currentTheme) return;
 
   return (
     <div style={{ display: "flex", alignItems: "center", height: 36 }}>

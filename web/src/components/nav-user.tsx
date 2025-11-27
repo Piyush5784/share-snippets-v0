@@ -26,6 +26,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export function NavUser({
   user,
@@ -42,8 +43,10 @@ export function NavUser({
     return `${user && user.name && user.name.split(" ")[0][0].toUpperCase()}`;
   };
 
+  const router = useRouter();
+
   return (
-    <SidebarMenu>
+    <SidebarMenu onClick={() => router.push("/pages/snippets/settings")}>
       <SidebarMenuItem>
         <DropdownMenu>
           {/* <DropdownMenuTrigger asChild> */}

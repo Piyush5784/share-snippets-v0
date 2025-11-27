@@ -126,7 +126,7 @@ const HeroSection = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="bg-opacity-50 bg-gradient-to-b from-neutral-900 to-neutral-500 dark:from-neutral-50 dark:to-neutral-400 bg-clip-text text-center text-4xl font-bold text-transparent md:text-8xl"
             >
-              Your Code,
+              Share Code,
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 dark:from-blue-400 dark:via-blue-500 dark:to-purple-500">
                 Everywhere

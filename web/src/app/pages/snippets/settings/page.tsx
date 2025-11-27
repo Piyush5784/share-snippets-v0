@@ -47,7 +47,7 @@ const Page = () => {
   };
 
   return (
-    <div className="py-10 text-lg">
+    <div className="py-10 text-lg max-w-md">
       {" "}
       {/* Increased font size */}
       <Card>
@@ -116,12 +116,9 @@ const Page = () => {
           <div>
             <Label className="text-base">API Token</Label>
             <div className="flex items-center gap-2 mt-1">
-              <Input
-                value={data || ""}
-                readOnly
-                placeholder="No API key"
-                className="flex-1 text-base"
-              />
+              <p className="text-zinc-600 text-sm dark:text-zinc-400 w-[30vw] p-2 pl-0 truncate overflow-hidden">
+                {data + "..."}
+              </p>
               {data && <CopyButton value={data}></CopyButton>}
             </div>
             {/* Always show Generate API Key button */}

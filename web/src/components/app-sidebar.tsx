@@ -33,6 +33,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 // This is sample data.
 const data = {
