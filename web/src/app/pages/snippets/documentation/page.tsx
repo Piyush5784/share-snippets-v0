@@ -44,7 +44,7 @@ const Page = () => {
               <code className="text-sm font-mono">
                 # For VS Code
                 <br />
-                ext install share-snippets
+                ext install Piyush5784.share-snippets-by-Piyush5784
               </code>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -89,7 +89,7 @@ const Page = () => {
         </div>
 
         {/* Configuration Section */}
-        <div className="bg-background border border-border rounded-xl shadow p-8">
+        <div className="bg-background border border-border rounded-xl shadow p-8 mb-8">
           <h2 className="text-2xl font-semibold mb-6 flex items-center">
             <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
               3
@@ -105,10 +105,30 @@ const Page = () => {
               <div className="flex items-center">
                 <div className="mr-3">✅</div>
                 <div>
-                  <h4 className="font-medium">You're all set!</h4>
+                  <p className="font-medium">You're all set!</p>
+                  <p className="text-sm text-muted-foreground">
+                    Open the command palette (Ctrl+Shift+P / Cmd+Shift+P),
+                    search for "Share Snippets", and start sharing your code!
+                  </p>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="bg-background border border-border rounded-xl shadow p-8">
+          <h2 className="text-2xl font-semibold mb-6 flex items-center">
+            <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3"></span>
+            Demo (How to install and use extension)
+          </h2>
+          <div className="space-y-6">
+            <video
+              src={
+                "https://res.cloudinary.com/dzf9kamfw/video/upload/v1764288807/Screencast_from_2025-11-28_05-32-32_pc5hdd.webm"
+              }
+              controls
+              autoPlay
+            />
           </div>
         </div>
       </div>

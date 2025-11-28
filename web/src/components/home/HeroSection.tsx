@@ -204,7 +204,7 @@ const HeroSection = () => {
                   className="z-50 px-8 py-6 bg-transparent border-2 border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:border-neutral-600 dark:hover:border-neutral-600 transition-all duration-300 text-base md:text-lg font-semibold"
                   asChild
                 >
-                  <Link href="/explore">Explore Snippets</Link>
+                  <Link href="/pages/login">Explore Snippets</Link>
                 </Button>
               </div>
 

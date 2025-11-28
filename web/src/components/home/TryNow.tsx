@@ -173,7 +173,14 @@ const TryNow = () => {
                   whileTap={{ scale: 0.95 }}
                   className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-gray-300 dark:border-gray-700 bg-transparent px-8 py-3 font-semibold text-blue-900 dark:text-white transition-all hover:border-gray-400 dark:hover:border-gray-600 hover:bg-black/5 dark:hover:bg-white/5"
                 >
-                  View Demo
+                  <Link
+                    target="_blank"
+                    href={
+                      "https://res.cloudinary.com/dzf9kamfw/video/upload/v1764288807/Screencast_from_2025-11-28_05-32-32_pc5hdd.webm"
+                    }
+                  >
+                    View Demo
+                  </Link>
                 </motion.button>
               </motion.div>
 
