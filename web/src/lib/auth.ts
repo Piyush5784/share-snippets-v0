@@ -95,7 +95,33 @@ export const nextAuthOptions: NextAuthOptions = {
       }
       return token;
     },
+    async signIn({ account, user }) {
+      if (account?.provider === "google") {
+        const email = user.email;
 
+        if (!email) {
+          throw new Error(
+            JSON.stringify({ error: "Invalid email", status: false })
+          );
+        }
+
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+
+        if (!existingUser) {
+          await prisma.user.create({
+            data: {
+              email,
+              image: user.image as string,
+              name: user.name as string,
+              provider: "GOOGLE",
+            },
+          });
+        }
+
+        return true;
+      }
+      return true;
+    },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;

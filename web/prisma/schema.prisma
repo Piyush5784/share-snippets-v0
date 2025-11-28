@@ -7,13 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Provider  {
+  GOOGLE
+  CREDENTIALS
+}
+
 model User {
   id            String    @id @default(uuid()) @map("_id")
   email         String    @unique
   name          String?
   emailVerified DateTime?
   image         String?
-  password      String? // For credentials provider (hashed)
+  password      String? 
+  provider      Provider?   @default(CREDENTIALS)
 
   snippets        Snippets[]
   starredSnippets StarredSnippets[] @relation("UserStars")

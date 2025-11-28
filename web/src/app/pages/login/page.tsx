@@ -12,6 +12,7 @@ import { FaGithub } from "react-icons/fa";
 import { AuthErrorHandler } from "@/components/custom/error-handler";
 import Topbar from "@/components/home/Topbar";
 import { FcGoogle } from "react-icons/fc";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,11 +30,26 @@ export default function LoginPage() {
       const result = await signIn("credentials", {
         email,
         password,
-        redirect: true,
+        redirect: false,
         callbackUrl: "/pages/snippets",
       });
+
+      if (result?.status === 200) {
+        toast.success("Logged in!", {
+          description: "User successfully logged in",
+        });
+        router.push("/pages/snippets");
+      } else {
+        console.log(result?.error);
+        toast.error("Login failed", {
+          description: result?.error,
+        });
+      }
     } catch (error) {
-      setError("Something went wrong");
+      console.error("Login error", error);
+      toast.error("Something went wrong", {
+        description: "Failed to login. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -41,7 +57,7 @@ export default function LoginPage() {
 
   const handleOAuthSignIn = async (provider: "google" | "github") => {
     setLoading(true);
-    await signIn(provider, { callbackUrl: "/pages/snippets", redirect: true });
+    await signIn(provider, { callbackUrl: "/pages/snippets", redirect: false });
   };
 
   return (

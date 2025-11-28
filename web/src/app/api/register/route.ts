@@ -41,6 +41,7 @@ export async function POST(req: Request) {
       data: {
         name,
         email,
+        provider: "GOOGLE",
         apiKey: "",
         password: hashedPassword,
       },

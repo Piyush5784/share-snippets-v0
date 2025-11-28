@@ -44,7 +44,9 @@ const Page = () => {
               <code className="text-sm font-mono">
                 # For VS Code
                 <br />
-                ext install Piyush5784.share-snippets-by-Piyush5784
+                Search on VS code extension share-snippets-by-Piyush5784 <br />{" "}
+                or
+                <br /> ext install Piyush5784.share-snippets-by-Piyush5784
               </code>
             </div>
             <p className="text-sm text-muted-foreground">

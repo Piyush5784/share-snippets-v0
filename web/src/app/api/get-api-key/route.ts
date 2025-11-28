@@ -8,7 +8,7 @@ import { API_SECRET } from "@/lib/config";
 
 export async function GET() {
   try {
-    const session = await checkSession();
+    const session = await checkUser();
 
     console.log(session);
 
