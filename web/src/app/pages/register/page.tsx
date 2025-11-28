@@ -147,7 +147,7 @@ export default function RegisterPage() {
             {loading ? "Creating account..." : "Create account"}
           </Button>
 
-          <div className="relative">
+          {/* <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
             </div>
@@ -156,9 +156,9 @@ export default function RegisterPage() {
                 Or continue with
               </span>
             </div>
-          </div>
+          </div> */}
 
-          <Button
+          {/* <Button
             type="button"
             variant="outline"
             className="w-full"
@@ -167,7 +167,7 @@ export default function RegisterPage() {
           >
             <FcGoogle />
             Sign up with Google
-          </Button>
+          </Button> */}
 
           {/* <Button
             type="button"

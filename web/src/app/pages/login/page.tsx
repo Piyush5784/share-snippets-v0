@@ -98,7 +98,7 @@ export default function LoginPage() {
             {loading ? "Loading..." : "Login"}
           </Button>
 
-          <div className="relative">
+          {/* <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
             </div>
@@ -107,9 +107,9 @@ export default function LoginPage() {
                 Or continue with
               </span>
             </div>
-          </div>
+          </div> */}
 
-          <Button
+          {/* <Button
             type="button"
             variant="outline"
             className="w-full"
@@ -118,7 +118,7 @@ export default function LoginPage() {
           >
             <FcGoogle />
             Login with Google
-          </Button>
+          </Button> */}
 
           {/* <Button
             type="button"
