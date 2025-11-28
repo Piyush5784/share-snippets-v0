@@ -30,19 +30,19 @@ const Footer: React.FC = () => {
     {
       title: "Product",
       links: [
-        { label: "Features", href: "#features" },
-        { label: "Pricing", href: "/pricing" },
-        { label: "Documentation", href: "/docs" },
-        { label: "API", href: "/api" },
+        { label: "Features", href: "#" },
+        { label: "Pricing", href: "#" },
+        { label: "Documentation", href: "#" },
+        { label: "API", href: "#" },
       ],
     },
     {
       title: "Resources",
       links: [
-        { label: "Blog", href: "/blog" },
-        { label: "Tutorials", href: "/tutorials" },
-        { label: "Changelog", href: "/changelog" },
-        { label: "Support", href: "/support" },
+        { label: "Blog", href: "#" },
+        { label: "Tutorials", href: "#" },
+        { label: "Changelog", href: "#" },
+        { label: "Support", href: "#" },
       ],
     },
     {
@@ -50,7 +50,7 @@ const Footer: React.FC = () => {
       links: [
         {
           label: "VS Code",
-          href: "https://marketplace.visualstudio.com/items?itemName=DishantMiyani.syntax-snipp",
+          href: "https://marketplace.visualstudio.com/items?itemName=Piyush5784.share-snippets-by-Piyush5784",
           external: true,
         },
         { label: "NeoVim", href: "#", external: false },
@@ -61,10 +61,10 @@ const Footer: React.FC = () => {
     {
       title: "Legal",
       links: [
-        { label: "Privacy Policy", href: "/privacy" },
-        { label: "Terms of Service", href: "/terms" },
-        { label: "Cookie Policy", href: "/cookies" },
-        { label: "Licenses", href: "/licenses" },
+        { label: "Privacy Policy", href: "#" },
+        { label: "Terms of Service", href: "#" },
+        { label: "Cookie Policy", href: "#" },
+        { label: "Licenses", href: "#" },
       ],
     },
   ];
@@ -72,25 +72,25 @@ const Footer: React.FC = () => {
   const socialLinks = [
     {
       icon: Twitter,
-      href: "https://twitter.com",
+      href: "https://x.com/Piyush5784",
       label: "Twitter",
       hoverColor: "hover:text-blue-500 dark:hover:text-blue-400",
     },
     {
       icon: Github,
-      href: "https://github.com/Dishant1804",
+      href: "https://github.com/Piyush5784",
       label: "GitHub",
       hoverColor: "hover:text-black dark:hover:text-white",
     },
     {
       icon: Linkedin,
-      href: "https://linkedin.com/in/dishantmiyani",
+      href: "https://www.linkedin.com/in/piyush-jha-a29619239/",
       label: "LinkedIn",
       hoverColor: "hover:text-blue-700 dark:hover:text-blue-500",
     },
     {
       icon: Mail,
-      href: "mailto:contact@syntaxsnipp.com",
+      href: "mailto:piyushjha5668@gmail.com",
       label: "Email",
       hoverColor: "hover:text-green-600 dark:hover:text-green-400",
     },

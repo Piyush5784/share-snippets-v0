@@ -2,10 +2,11 @@
   "name": "share-snippets-by-piyush5784",
   "displayName": "Share Snippets By Piyush5784",
   "description": "Access and insert code snippets from your Share Snippets collection directly in VS Code",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.85.0"
   },
+  "icon": "images/logo.png",
   "publisher": "Piyush5784",
   "homepage": "https://marketplace.visualstudio.com/publishers/Piyush5784",
   "categories": [
