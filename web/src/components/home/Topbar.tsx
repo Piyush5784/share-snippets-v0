@@ -74,18 +74,12 @@ const Topbar = () => {
             ))}
             <div className="flex w-full flex-col gap-4">
               <NavbarButton
+                href="/pages/login"
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full"
               >
                 Login
-              </NavbarButton>
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Book a call
               </NavbarButton>
             </div>
           </MobileNavMenu>

@@ -159,6 +159,8 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
     }
   };
 
+  const handleMobileView = () => {};
+
   const handleEdit = async () => {
     if (!selected) return;
     const editor = await editorRef.current;
@@ -226,7 +228,7 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row h-[88vh] overflow-hidden">
+      <div className="flex flex-col md:flex-row h-[88vh] md:overflow-hidden">
         {/* Snippets List */}
         <div className="w-full md:w-1/2 flex flex-col">
           {/* Search Bar */}
@@ -365,9 +367,9 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
 
         {/* Snippet Detail View */}
         <div className="p-4 h-[88vh] ">
-          <div className="bg-white  h-full dark:bg-zinc-900 rounded-xl shadow-lg transition-shadow duration-200 p-6 border border-zinc-200 dark:border-zinc-800">
+          <div className="bg-white hidden md:block h-full dark:bg-zinc-900 rounded-xl shadow-lg transition-shadow duration-200 p-6 border border-zinc-200 dark:border-zinc-800">
             {selected ? (
-              <div className="h-full flex flex-col">
+              <div className="h-full flex flex-col" onClick={handleMobileView}>
                 {/* Header */}
                 <div className="mb-4">
                   <div className="flex items-center gap-4 w-full">
@@ -452,7 +454,7 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
                 </div>
 
                 {/* Editor */}
-                <div className="flex-1 rounded-lg w-[45vw] border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800">
+                <div className=" md:flex-1  rounded-lg w-[45vw] border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800">
                   {selected.code ? (
                     <Editor
                       onMount={handleEditorMount}
