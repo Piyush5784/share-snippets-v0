@@ -1,11 +1,11 @@
 import { nextAuthOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import React from "react";
-import LoginPage from "./LoginPage";
+import Topbar from "./Topbar";
 
-const RegisterWrapper = async () => {
+const TopbarWrapper = async () => {
   const session = await getServerSession(nextAuthOptions);
-  return <LoginPage session={session} />;
+  return <Topbar session={session} />;
 };
 
-export default RegisterWrapper;
+export default TopbarWrapper;

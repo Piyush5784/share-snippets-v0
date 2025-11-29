@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Spotlight } from "../ui/spotlight";
-import Topbar from "./Topbar";
 
 const HeroSection = () => {
   const [activeM, setActiveM] = useState<string | null>(null);
