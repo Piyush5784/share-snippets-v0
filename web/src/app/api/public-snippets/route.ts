@@ -21,8 +21,10 @@ export async function GET(req: NextRequest) {
     const snippets = await prisma.snippets.findMany({
       where: {
         isPublic: true,
+        user: {
+          is: {},
+        },
       },
-
       select: {
         id: true,
         title: true,
