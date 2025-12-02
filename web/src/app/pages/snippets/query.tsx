@@ -66,7 +66,7 @@ export const useGetSnippetsById = (id: string) => {
     queryKey: ["get_snippets_by_id", id],
     queryFn: async () => {
       try {
-        const res = await axios.get(`/api/public-snippets/${id}`);
+        const res = await axios.get(`/api/private-snippets/${id}`);
         return res.data.data as snippetsType;
       } catch (error) {
         return null;

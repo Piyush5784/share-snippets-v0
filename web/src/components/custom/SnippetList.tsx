@@ -445,7 +445,7 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
                             url={`${BACKEND_URL}/pages/snippet/${selected.id}`}
                           />
                           <DeleteDialog
-                            show={session.data?.user?.id == selected.user.id}
+                            show={session?.data?.user?.id == selected?.user?.id}
                           />
                         </div>
                       </div>
@@ -454,7 +454,7 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
                 </div>
 
                 {/* Editor */}
-                <div className=" md:flex-1  rounded-lg w-[45vw] border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800">
+                <div className=" md:flex-1  w-[45vw]  bg-zinc-50 dark:bg-zinc-800">
                   {selected.code ? (
                     <Editor
                       onMount={handleEditorMount}
@@ -472,6 +472,7 @@ const SnippetsList = ({ data, isPending, error }: SnippetsListProps) => {
                         wrappingIndent: "same",
                         fontSize: 15,
                       }}
+                      className="border  border-zinc-200 dark:border-zinc-700 "
                       height="100%"
                       width={"100%"}
                     />

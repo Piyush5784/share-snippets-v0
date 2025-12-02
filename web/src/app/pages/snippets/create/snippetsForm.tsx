@@ -239,7 +239,7 @@ const SnippetForm = ({
               </div>
             </div>
           </div>
-          <div className="h-[30rem] flex rounded-lg">
+          <div className="h-120 flex">
             <Editor
               onMount={handleEditorMount}
               language={language.toLowerCase()}
