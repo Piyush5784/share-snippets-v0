@@ -13,6 +13,7 @@ import { FaGithub } from "react-icons/fa";
 import { AuthErrorHandler } from "@/components/custom/error-handler";
 import Topbar from "@/components/home/Topbar";
 import { Session } from "next-auth";
+import { PasswordInput } from "@/components/custom/password-input";
 
 export default function RegisterPage({ session }: { session: Session | null }) {
   const router = useRouter();
@@ -121,9 +122,8 @@ export default function RegisterPage({ session }: { session: Session | null }) {
 
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -134,9 +134,8 @@ export default function RegisterPage({ session }: { session: Session | null }) {
 
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
+            <PasswordInput
               id="confirmPassword"
-              type="password"
               placeholder="********"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}

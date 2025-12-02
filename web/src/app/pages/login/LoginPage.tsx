@@ -14,6 +14,7 @@ import Topbar from "@/components/home/Topbar";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import { Session } from "next-auth";
+import { PasswordInput } from "@/components/custom/password-input";
 
 export default function LoginPage({ session }: { session: Session | null }) {
   const router = useRouter();
@@ -100,9 +101,8 @@ export default function LoginPage({ session }: { session: Session | null }) {
                 Forgot password?
               </Link>
             </div>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
