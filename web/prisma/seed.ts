@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import crypto from "crypto";
+
 function normalizeCode(code: string, language?: string): string {
   if (!code || code.trim() === "") return "";
 
@@ -45,55 +47,70 @@ function normalizeCode(code: string, language?: string): string {
   return normalized.join("\n");
 }
 
-const code = `const express = require('express')
-                const app = express()
-                const port = 3000
-
-                app.get('/', (req, res) => {
-                res.send('Hello World!')
-                })
-
-                app.listen(port, () => {
-                
-                console.log("Example app listening on port " + port)
-                })
-            )`;
+// Generate a unique API key
+function generateApiKey(): string {
+  return `sk_${crypto.randomBytes(32).toString("hex")}`;
+}
 
 const prisma = new PrismaClient();
+
 async function main() {
-  const transaction = await prisma.$transaction(async (tx) => {
-    const user1 = await tx.user.upsert({
-      where: { email: "test1@gmail.com" },
+  console.log("🌱 Starting database seed...\n");
+
+  // Indian and USA male names with emails
+  const users = [
+    {
+      name: "Rajesh Kumar",
+      email: "rajesh.kumar@example.com",
+      country: "India",
+    },
+    { name: "Amit Patel", email: "amit.patel@example.com", country: "India" },
+    {
+      name: "Vikram Singh",
+      email: "vikram.singh@example.com",
+      country: "India",
+    },
+    { name: "John Smith", email: "john.smith@example.com", country: "USA" },
+    {
+      name: "Michael Johnson",
+      email: "michael.johnson@example.com",
+      country: "USA",
+    },
+    {
+      name: "David Williams",
+      email: "david.williams@example.com",
+      country: "USA",
+    },
+  ];
+
+  const createdUsers = [];
+
+  // Create users
+  for (const userData of users) {
+    const user = await prisma.user.upsert({
+      where: { email: userData.email },
       create: {
-        name: "Test1",
-        email: "test1@gmail.com",
-        password: "1234567",
-        image: "https://www.freepik.com/free-photos-vectors/default-user",
+        name: userData.name,
+        email: userData.email,
+        password: "$2a$13$hashedpassword", // Placeholder hashed password
+        image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.name}`,
+        provider: "CREDENTIALS",
+        apiKey: generateApiKey(),
       },
       update: {},
     });
+    createdUsers.push(user);
+    console.log(`✅ User created: ${user.name} (${userData.country})`);
+  }
 
-    console.log("User1 created");
-    const user2 = await tx.user.upsert({
-      where: { email: "test2@gmail.com" },
-      create: {
-        name: "Test2",
-        email: "test2@gmail.com",
-        password: "1234567",
-        image: "https://www.freepik.com/free-photos-vectors/default-user",
-      },
-      update: {},
-    });
-
-    console.log("User2 created");
-    const snippet1 = await tx.snippets.upsert({
-      where: { id: user1.id },
-      create: {
-        title: "React Query Post Request",
-        tags: ["Reactjs", "Typescript"],
-        description: "React Post Request with React query using use mutation",
-        code: normalizeCode(
-          `const { mutate, isLoading } = useMutation(createPost, {
+  // Code snippets data
+  const snippetsData = [
+    {
+      title: "React Query Post Request",
+      tags: ["React", "TypeScript", "React Query"],
+      description: "React Post Request with React Query using useMutation hook",
+      code: normalizeCode(
+        `const { mutate, isLoading } = useMutation(createPost, {
   onSuccess: (data) => {
     console.log('Post created:', data);
     // Optionally, invalidate queries to refetch data
@@ -106,34 +123,196 @@ async function main() {
     // This runs after onSuccess or onError
     queryClient.invalidateQueries('posts');
   },
-});   `,
-          "Reactjs"
-        ),
-        language: "typescript",
-        isPublic: true,
-        userId: user1.id,
-      },
-      update: {},
-    });
+});`,
+        "typescript"
+      ),
+      language: "TypeScript",
+      isPublic: true,
+    },
+    {
+      title: "Node.js Express Server",
+      tags: ["Node.js", "Express", "JavaScript"],
+      description: "Basic Express.js server implementation with routing",
+      code: normalizeCode(
+        `const express = require('express');
+const app = express();
+const port = 3000;
 
-    console.log("Snippet1 created");
-    const snippet2 = await tx.snippets.upsert({
-      where: { id: user2.id },
-      create: {
-        tags: ["Nodejs", "Javascript"],
-        title: "Nodejs Express implementation",
-        description:
-          "This is a code of the implementation of the Nodejs with Expressjs framework",
-        code: normalizeCode(code, "Nodejs"),
-        language: "Nodejs",
-        isPublic: true,
-        userId: user2.id,
-      },
-      update: {},
-    });
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
-    console.log("Snippet2 created");
-  });
+app.listen(port, () => {
+  console.log(\`Example app listening on port \${port}\`);
+});`,
+        "javascript"
+      ),
+      language: "JavaScript",
+      isPublic: true,
+    },
+    {
+      title: "Python FastAPI Endpoint",
+      tags: ["Python", "FastAPI", "API"],
+      description:
+        "FastAPI endpoint with async support and Pydantic validation",
+      code: normalizeCode(
+        `from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: bool = False
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return {"item_name": item.name, "item_price": item.price}`,
+        "python"
+      ),
+      language: "Python",
+      isPublic: true,
+    },
+    {
+      title: "MongoDB Aggregation Pipeline",
+      tags: ["MongoDB", "Database", "Aggregation"],
+      description: "Complex MongoDB aggregation with grouping and sorting",
+      code: normalizeCode(
+        `db.orders.aggregate([
+  {
+    $match: { status: "completed" }
+  },
+  {
+    $group: {
+      _id: "$customerId",
+      totalSpent: { $sum: "$amount" },
+      orderCount: { $sum: 1 }
+    }
+  },
+  {
+    $sort: { totalSpent: -1 }
+  },
+  {
+    $limit: 10
+  }
+]);`,
+        "javascript"
+      ),
+      language: "JavaScript",
+      isPublic: true,
+    },
+    {
+      title: "React Custom Hook",
+      tags: ["React", "Hooks", "TypeScript"],
+      description:
+        "Custom React hook for fetching data with loading and error states",
+      code: normalizeCode(
+        `import { useState, useEffect } from 'react';
+
+function useFetch<T>(url: string) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err);
+        setLoading(false);
+      });
+  }, [url]);
+
+  return { data, loading, error };
+}`,
+        "typescript"
+      ),
+      language: "TypeScript",
+      isPublic: true,
+    },
+    {
+      title: "Prisma Schema Example",
+      tags: ["Prisma", "Database", "ORM"],
+      description: "Prisma schema with relations and indexes",
+      code: normalizeCode(
+        `model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-main();
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+}`,
+        "prisma"
+      ),
+      language: "Prisma",
+      isPublic: true,
+    },
+  ];
+
+  // Create snippets for users
+  for (let i = 0; i < snippetsData.length; i++) {
+    const snippetData = snippetsData[i];
+    const user = createdUsers[i % createdUsers.length]; // Distribute snippets among users
+
+    const snippet = await prisma.snippets.create({
+      data: {
+        ...snippetData,
+        userId: user.id,
+      },
+    });
+    console.log(`✅ Snippet created: "${snippet.title}" by ${user.name}`);
+  }
+
+  // Create some starred snippets (users starring each other's snippets)
+  const allSnippets = await prisma.snippets.findMany();
+
+  for (let i = 0; i < Math.min(3, allSnippets.length); i++) {
+    const snippet = allSnippets[i];
+    const starringUser = createdUsers[(i + 1) % createdUsers.length]; // Different user stars
+
+    // Only star if not the author
+    if (snippet.userId !== starringUser.id) {
+      await prisma.starredSnippets.create({
+        data: {
+          snippetId: snippet.id,
+          userId: starringUser.id,
+          authorId: snippet.userId,
+          isStarred: true,
+        },
+      });
+      console.log(
+        `⭐ ${starringUser.name} starred snippet: "${snippet.title}"`
+      );
+    }
+  }
+
+  console.log("\n✅ Database seeding completed successfully!");
+}
+
+main()
+  .catch((e) => {
+    console.error("❌ Error during seeding:", e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
