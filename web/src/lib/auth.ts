@@ -2,8 +2,6 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 import {
@@ -15,21 +13,19 @@ import {
 } from "./config";
 
 export const nextAuthOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
-          prompt: "select_account",
+          prompt: "consent",
           access_type: "offline",
           response_type: "code",
         },
       },
       httpOptions: {
         timeout: 10000,
-        agent: false,
       },
     }),
 
@@ -102,29 +98,48 @@ export const nextAuthOptions: NextAuthOptions = {
       return token;
     },
     async signIn({ account, user }) {
-      if (account?.provider === "google") {
+      if (account?.provider === "google" || account?.provider === "github") {
         const email = user.email;
 
         if (!email) {
-          throw new Error(
-            JSON.stringify({ error: "Invalid email", status: false })
-          );
+          console.error(`No email provided for ${account.provider} sign-in`);
+          return false;
         }
 
-        const existingUser = await prisma.user.findUnique({ where: { email } });
-
-        if (!existingUser) {
-          await prisma.user.create({
-            data: {
-              email,
-              image: user.image as string,
-              name: user.name as string,
-              provider: "GOOGLE",
-            },
+        try {
+          const existingUser = await prisma.user.findUnique({
+            where: { email },
           });
-        }
 
-        return true;
+          if (existingUser) {
+            await prisma.user.update({
+              where: { email },
+              data: {
+                name: user.name || existingUser.name,
+                image: user.image || existingUser.image,
+                ...(existingUser.provider === "CREDENTIALS"
+                  ? {}
+                  : {
+                      provider: account.provider.toUpperCase() as "GOOGLE",
+                    }),
+              },
+            });
+          } else {
+            await prisma.user.create({
+              data: {
+                email,
+                name: user.name || null,
+                image: user.image || null,
+                provider: account.provider.toUpperCase() as "GOOGLE",
+              },
+            });
+          }
+
+          return true;
+        } catch (error) {
+          console.error(`Error during ${account.provider} sign-in:`, error);
+          return false;
+        }
       }
       return true;
     },
