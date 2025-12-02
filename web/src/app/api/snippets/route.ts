@@ -63,6 +63,8 @@ export async function GET() {
     // const session = await checkSession();
     const user = await checkUser();
 
+    console.log(user);
+
     if (!user) {
       return ApiResponse({
         message: "Unauthorised user",

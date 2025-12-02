@@ -4,7 +4,7 @@ import { ApiResponse } from "@/utils/formatResponse";
 
 export async function POST(req: Request) {
   try {
-    const user = await checkSession();
+    const user = await checkUser();
     const { snippetId } = await req.json();
 
     if (!user || !snippetId) {
@@ -36,6 +36,8 @@ export async function POST(req: Request) {
         snippetId,
       },
     });
+
+    console.log(existingStar);
 
     if (existingStar) {
       // Unstar - delete the record
@@ -93,6 +95,10 @@ export async function GET(req: Request) {
         userId: user.id,
       },
       select: {
+        id: true,
+        userId: true,
+        snippetId: true,
+        isStarred: true,
         author: {
           select: {
             id: true,
@@ -115,7 +121,6 @@ export async function GET(req: Request) {
         },
       },
     });
-
     return ApiResponse({
       message: "Saved Snippet successfully fetched",
       success: true,
