@@ -1,321 +1,316 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import crypto from "crypto";
+
+function normalizeCode(code: string, language?: string): string {
+  if (!code || code.trim() === "") return "";
+
+  let lines = code.split("\n");
+
+  // Remove leading empty lines
+  while (lines.length > 0 && lines[0].trim() === "") {
+    lines.shift();
+  }
+
+  // Remove trailing empty lines
+  while (lines.length > 0 && lines[lines.length - 1].trim() === "") {
+    lines.pop();
+  }
+
+  // Replace carriage returns and normalize tabs to spaces
+  lines = lines.map((line) => line.replace(/\r$/, "").replace(/\t/g, "  "));
+
+  const nonEmptyLines = lines.filter((line) => line.trim() !== "");
+  if (nonEmptyLines.length === 0) return "";
+
+  // Find minimum indentation (only from non-empty lines)
+  const minIndent = Math.min(
+    ...nonEmptyLines.map((line) => {
+      const match = line.match(/^\s*/);
+      return match ? match[0].length : 0;
+    })
+  );
+
+  // Remove common indentation
+  const normalized = lines.map((line) => {
+    if (line.trim() === "") return "";
+    return line.length >= minIndent ? line.slice(minIndent) : line;
+  });
+
+  // Remove any remaining leading/trailing empty lines
+  while (normalized.length > 0 && normalized[0] === "") {
+    normalized.shift();
+  }
+  while (normalized.length > 0 && normalized[normalized.length - 1] === "") {
+    normalized.pop();
+  }
+
+  return normalized.join("\n");
+}
+
+// Generate a unique API key
+function generateApiKey(): string {
+  return `sk_${crypto.randomBytes(32).toString("hex")}`;
+}
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Starting database seeding...");
+  console.log("🌱 Starting database seed...\n");
 
-  // Create users with Indian and USA names
+  // Indian and USA male names with emails
   const users = [
     {
-      email: "rajesh.kumar@example.com",
       name: "Rajesh Kumar",
-      password: await bcrypt.hash("password123", 10),
-      provider: "CREDENTIALS" as const,
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rajesh",
+      email: "rajesh.kumar@example.com",
+      country: "India",
+    },
+    { name: "Amit Patel", email: "amit.patel@example.com", country: "India" },
+    {
+      name: "Vikram Singh",
+      email: "vikram.singh@example.com",
+      country: "India",
+    },
+    { name: "John Smith", email: "john.smith@example.com", country: "USA" },
+    {
+      name: "Michael Johnson",
+      email: "michael.johnson@example.com",
+      country: "USA",
     },
     {
-      email: "priya.sharma@example.com",
-      name: "Priya Sharma",
-      password: await bcrypt.hash("password123", 10),
-      provider: "CREDENTIALS" as const,
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
-    },
-    {
-      email: "john.smith@example.com",
-      name: "John Smith",
-      password: await bcrypt.hash("password123", 10),
-      provider: "CREDENTIALS" as const,
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-    },
-    {
-      email: "sarah.johnson@example.com",
-      name: "Sarah Johnson",
-      password: await bcrypt.hash("password123", 10),
-      provider: "CREDENTIALS" as const,
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-    },
-    {
-      email: "amit.patel@example.com",
-      name: "Amit Patel",
-      password: await bcrypt.hash("password123", 10),
-      provider: "CREDENTIALS" as const,
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amit",
-    },
-    {
-      email: "michael.brown@example.com",
-      name: "Michael Brown",
-      password: await bcrypt.hash("password123", 10),
-      provider: "CREDENTIALS" as const,
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+      name: "David Williams",
+      email: "david.williams@example.com",
+      country: "USA",
     },
   ];
 
-  console.log("👥 Creating users...");
   const createdUsers = [];
+
+  // Create users
   for (const userData of users) {
     const user = await prisma.user.upsert({
       where: { email: userData.email },
+      create: {
+        name: userData.name,
+        email: userData.email,
+        password: "$2a$13$hashedpassword", // Placeholder hashed password
+        image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.name}`,
+        provider: "CREDENTIALS",
+        apiKey: generateApiKey(),
+      },
       update: {},
-      create: { ...userData, apiKey: Math.random().toString() },
     });
     createdUsers.push(user);
-    console.log(`✓ Created user: ${user.name}`);
+    console.log(`✅ User created: ${user.name} (${userData.country})`);
   }
 
   // Code snippets data
   const snippetsData = [
     {
-      title: "React Custom Hook - useLocalStorage",
-      description:
-        "A custom React hook for managing localStorage with TypeScript support",
+      title: "React Query Post Request",
+      tags: ["React", "TypeScript", "React Query"],
+      description: "React Post Request with React Query using useMutation hook",
+      code: normalizeCode(
+        `const { mutate, isLoading } = useMutation(createPost, {
+  onSuccess: (data) => {
+    console.log('Post created:', data);
+    // Optionally, invalidate queries to refetch data
+    queryClient.invalidateQueries('posts');
+  },
+  onError: (error) => {
+    console.error('Error creating post:', error);
+  },
+  onSettled: () => {
+    // This runs after onSuccess or onError
+    queryClient.invalidateQueries('posts');
+  },
+});`,
+        "typescript"
+      ),
       language: "TypeScript",
-      code: `import { useState, useEffect } from 'react';
-
-function useLocalStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error(error);
-      return initialValue;
-    }
-  });
-
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  return [storedValue, setValue] as const;
-}
-
-export default useLocalStorage;`,
-      tags: ["react", "hooks", "typescript", "localStorage"],
       isPublic: true,
-      userIndex: 0,
     },
     {
-      title: "Debounce Function",
-      description: "A utility function to debounce rapid function calls",
+      title: "Node.js Express Server",
+      tags: ["Node.js", "Express", "JavaScript"],
+      description: "Basic Express.js server implementation with routing",
+      code: normalizeCode(
+        `const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(port, () => {
+  console.log(\`Example app listening on port \${port}\`);
+});`,
+        "javascript"
+      ),
       language: "JavaScript",
-      code: `function debounce(func, wait) {
-  let timeout;
-  
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
-// Usage example
-const handleSearch = debounce((searchTerm) => {
-  console.log('Searching for:', searchTerm);
-}, 300);`,
-      tags: ["javascript", "utility", "performance"],
       isPublic: true,
-      userIndex: 2,
     },
     {
-      title: "FastAPI CRUD Operations",
-      description: "Complete CRUD operations using FastAPI and SQLAlchemy",
-      language: "Python",
-      code: `from fastapi import FastAPI, HTTPException, Depends
-from sqlalchemy.orm import Session
-from typing import List
+      title: "Python FastAPI Endpoint",
+      tags: ["Python", "FastAPI", "API"],
+      description:
+        "FastAPI endpoint with async support and Pydantic validation",
+      code: normalizeCode(
+        `from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: bool = False
+
 @app.post("/items/")
-def create_item(item: schemas.ItemCreate, db: Session = Depends(get_db)):
-    db_item = models.Item(**item.dict())
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
-
-@app.get("/items/")
-def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = db.query(models.Item).offset(skip).limit(limit).all()
-    return items
-
-@app.delete("/items/{item_id}")
-def delete_item(item_id: int, db: Session = Depends(get_db)):
-    db_item = db.query(models.Item).filter(models.Item.id == item_id).first()
-    if db_item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
-    db.delete(db_item)
-    db.commit()
-    return {"message": "Item deleted"}`,
-      tags: ["python", "fastapi", "crud", "api"],
+async def create_item(item: Item):
+    return {"item_name": item.name, "item_price": item.price}`,
+        "python"
+      ),
+      language: "Python",
       isPublic: true,
-      userIndex: 1,
     },
     {
-      title: "Go REST API with Gin",
-      description: "Simple REST API server using Gin framework",
-      language: "Go",
-      code: `package main
+      title: "MongoDB Aggregation Pipeline",
+      tags: ["MongoDB", "Database", "Aggregation"],
+      description: "Complex MongoDB aggregation with grouping and sorting",
+      code: normalizeCode(
+        `db.orders.aggregate([
+  {
+    $match: { status: "completed" }
+  },
+  {
+    $group: {
+      _id: "$customerId",
+      totalSpent: { $sum: "$amount" },
+      orderCount: { $sum: 1 }
+    }
+  },
+  {
+    $sort: { totalSpent: -1 }
+  },
+  {
+    $limit: 10
+  }
+]);`,
+        "javascript"
+      ),
+      language: "JavaScript",
+      isPublic: true,
+    },
+    {
+      title: "React Custom Hook",
+      tags: ["React", "Hooks", "TypeScript"],
+      description:
+        "Custom React hook for fetching data with loading and error states",
+      code: normalizeCode(
+        `import { useState, useEffect } from 'react';
 
-import (
-    "net/http"
-    "github.com/gin-gonic/gin"
-)
+function useFetch<T>(url: string) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-type Book struct {
-    ID     string  \`json:"id"\`
-    Title  string  \`json:"title"\`
-    Author string  \`json:"author"\`
-}
+  useEffect(() => {
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err);
+        setLoading(false);
+      });
+  }, [url]);
 
-var books = []Book{
-    {ID: "1", Title: "The Go Programming Language", Author: "Alan Donovan"},
-}
-
-func getBooks(c *gin.Context) {
-    c.JSON(http.StatusOK, books)
-}
-
-func main() {
-    router := gin.Default()
-    router.GET("/books", getBooks)
-    router.Run(":8080")
+  return { data, loading, error };
 }`,
-      tags: ["go", "gin", "rest-api", "backend"],
+        "typescript"
+      ),
+      language: "TypeScript",
       isPublic: true,
-      userIndex: 3,
     },
     {
-      title: "Modern CSS Grid Layout",
-      description: "Responsive grid layout with CSS Grid",
-      language: "CSS",
-      code: `.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
+      title: "Prisma Schema Example",
+      tags: ["Prisma", "Database", "ORM"],
+      description: "Prisma schema with relations and indexes",
+      code: normalizeCode(
+        `model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-.grid-item {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  padding: 2rem;
-  transition: transform 0.3s ease;
-}
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-.grid-item:hover {
-  transform: translateY(-5px);
+  @@index([authorId])
 }`,
-      tags: ["css", "grid", "responsive", "layout"],
+        "prisma"
+      ),
+      language: "Prisma",
       isPublic: true,
-      userIndex: 5,
-    },
-    {
-      title: "SQL Query with CTEs",
-      description: "Using Common Table Expressions for data analysis",
-      language: "SQL",
-      code: `WITH customer_purchases AS (
-    SELECT 
-        c.customer_id,
-        c.customer_name,
-        COUNT(o.order_id) as total_orders,
-        SUM(o.total_amount) as total_spent
-    FROM customers c
-    LEFT JOIN orders o ON c.customer_id = o.customer_id
-    GROUP BY c.customer_id, c.customer_name
-)
-SELECT 
-    customer_tier,
-    COUNT(*) as customer_count,
-    AVG(total_spent) as avg_lifetime_value
-FROM customer_purchases
-GROUP BY customer_tier;`,
-      tags: ["sql", "cte", "analytics", "database"],
-      isPublic: true,
-      userIndex: 0,
-    },
-    {
-      title: "Docker Multi-stage Build",
-      description: "Optimized Dockerfile for Node.js applications",
-      language: "Dockerfile",
-      code: `FROM node:18-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-
-FROM node:18-alpine AS production
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-EXPOSE 3000
-CMD ["node", "dist/index.js"]`,
-      tags: ["docker", "dockerfile", "devops", "nodejs"],
-      isPublic: true,
-      userIndex: 1,
-    },
-    {
-      title: "Bash Backup Script",
-      description: "Automated database backup with rotation",
-      language: "Bash",
-      code: `#!/bin/bash
-
-DB_NAME="myapp_db"
-BACKUP_DIR="/var/backups"
-DATE=$(date +%Y%m%d_%H%M%S)
-
-mkdir -p "$BACKUP_DIR"
-
-if mysqldump -u root -p"$DB_PASSWORD" "$DB_NAME" | gzip > "$BACKUP_DIR/DB_NAME_$DATE.sql.gz"; then
-    echo "Backup completed"
-    find "$BACKUP_DIR" -name DB_NAME_*.sql.gz" -mtime +7 -delete
-else
-    echo "Backup failed"
-    exit 1
-fi`,
-      tags: ["bash", "shell", "automation", "backup"],
-      isPublic: true,
-      userIndex: 4,
     },
   ];
 
-  console.log("\n📝 Creating snippets...");
-  for (const snippetData of snippetsData) {
-    const { userIndex, ...data } = snippetData;
+  // Create snippets for users
+  for (let i = 0; i < snippetsData.length; i++) {
+    const snippetData = snippetsData[i];
+    const user = createdUsers[i % createdUsers.length]; // Distribute snippets among users
+
     const snippet = await prisma.snippets.create({
       data: {
-        ...data,
-        userId: createdUsers[userIndex].id,
+        ...snippetData,
+        userId: user.id,
       },
     });
-    console.log(
-      `✓ Created: ${snippet.title} (by ${createdUsers[userIndex].name})`
-    );
+    console.log(`✅ Snippet created: "${snippet.title}" by ${user.name}`);
   }
 
-  console.log("\n✨ Seeding completed!");
-  console.log(`\n📊 Summary:`);
-  console.log(`   - Users: ${createdUsers.length}`);
-  console.log(`   - Snippets: ${snippetsData.length}`);
-  console.log(`\n🔑 Test password: password123`);
+  // Create some starred snippets (users starring each other's snippets)
+  const allSnippets = await prisma.snippets.findMany();
+
+  for (let i = 0; i < Math.min(3, allSnippets.length); i++) {
+    const snippet = allSnippets[i];
+    const starringUser = createdUsers[(i + 1) % createdUsers.length]; // Different user stars
+
+    // Only star if not the author
+    if (snippet.userId !== starringUser.id) {
+      await prisma.starredSnippets.create({
+        data: {
+          snippetId: snippet.id,
+          userId: starringUser.id,
+          authorId: snippet.userId,
+          isStarred: true,
+        },
+      });
+      console.log(
+        `⭐ ${starringUser.name} starred snippet: "${snippet.title}"`
+      );
+    }
+  }
+
+  console.log("\n✅ Database seeding completed successfully!");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Error:", e);
+    console.error("❌ Error during seeding:", e);
     process.exit(1);
   })
   .finally(async () => {

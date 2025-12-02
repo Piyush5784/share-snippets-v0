@@ -98,49 +98,30 @@ export const nextAuthOptions: NextAuthOptions = {
       return token;
     },
     async signIn({ account, user }) {
-      if (account?.provider === "google" || account?.provider === "github") {
-        const email = user.email;
+      // if (account?.provider === "google") {
+      //   const email = user.email;
 
-        if (!email) {
-          console.error(`No email provided for ${account.provider} sign-in`);
-          return false;
-        }
+      //   if (!email) {
+      //     throw new Error(
+      //       JSON.stringify({ error: "Invalid email", status: false })
+      //     );
+      //   }
 
-        try {
-          const existingUser = await prisma.user.findUnique({
-            where: { email },
-          });
+      //   const existingUser = await prisma.user.findUnique({ where: { email } });
 
-          if (existingUser) {
-            await prisma.user.update({
-              where: { email },
-              data: {
-                name: user.name || existingUser.name,
-                image: user.image || existingUser.image,
-                ...(existingUser.provider === "CREDENTIALS"
-                  ? {}
-                  : {
-                      provider: account.provider.toUpperCase() as "GOOGLE",
-                    }),
-              },
-            });
-          } else {
-            await prisma.user.create({
-              data: {
-                email,
-                name: user.name || null,
-                image: user.image || null,
-                provider: account.provider.toUpperCase() as "GOOGLE",
-              },
-            });
-          }
+      //   if (!existingUser) {
+      //     await prisma.user.create({
+      //       data: {
+      //         email,
+      //         image: user.image as string,
+      //         name: user.name as string,
+      //         provider: "GOOGLE",
+      //       },
+      //     });
+      //   }
 
-          return true;
-        } catch (error) {
-          console.error(`Error during ${account.provider} sign-in:`, error);
-          return false;
-        }
-      }
+      //   return true;
+      // }
       return true;
     },
     async session({ session, token }) {
