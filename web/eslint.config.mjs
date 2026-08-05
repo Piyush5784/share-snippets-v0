@@ -37,6 +37,12 @@ const config = [
       "@typescript-eslint/triple-slash-reference": "off",
       "react/no-unescaped-entities": "off",
       "react-hooks/exhaustive-deps": "warn",
+      "react/no-string-refs": "off",
+      "react/display-name": "off",
+      "react/no-deprecated": "off",
+      "react/no-direct-mutation-state": "off",
+      "react/require-render-return": "off",
+      "react/prop-types": "off",
     },
   },
 ];
