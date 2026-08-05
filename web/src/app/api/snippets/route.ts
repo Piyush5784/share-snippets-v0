@@ -1,4 +1,4 @@
-import { checkSession, checkUser } from "@/app/actions/checkUser";
+import { checkUser } from "@/app/actions/checkUser";
 import { prisma } from "@/lib/db";
 import { createSnippet } from "@/types/zod-schemas";
 import { ApiResponse } from "@/utils/formatResponse";
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
         message: "Invalid data",
         success: false,
         error: z.treeifyError(checkBody.error),
-        status: 500,
+        status: 400,
       });
     }
     const data = checkBody.data;
@@ -60,10 +60,7 @@ export async function POST(req: NextRequest) {
 // all the private snippets of the user
 export async function GET() {
   try {
-    // const session = await checkSession();
     const user = await checkUser();
-
-    console.log(user);
 
     if (!user) {
       return ApiResponse({
@@ -143,19 +140,30 @@ export async function DELETE(req: NextRequest) {
       });
     }
 
-    const snippet = await prisma.snippets.delete({
-      where: {
-        id,
-        user: { id: user?.id },
-      },
-    });
-
-    if (!snippet) {
-      return ApiResponse({
-        message: "Invalid id, data not found",
-        success: false,
-        status: 404,
+    try {
+      await prisma.snippets.delete({
+        where: {
+          id,
+          user: { id: user.id },
+        },
       });
+    } catch (deleteError) {
+      // Prisma throws (P2025) rather than returning null when the `where`
+      // doesn't match anything - i.e. the id doesn't exist or belongs to
+      // another user. Either way that's a 404, not a server error.
+      if (
+        deleteError &&
+        typeof deleteError === "object" &&
+        "code" in deleteError &&
+        deleteError.code === "P2025"
+      ) {
+        return ApiResponse({
+          message: "Invalid id, data not found",
+          success: false,
+          status: 404,
+        });
+      }
+      throw deleteError;
     }
 
     return ApiResponse({
@@ -179,6 +187,15 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
 
     const user = await checkUser();
+
+    if (!user) {
+      return ApiResponse({
+        message: "Unauthorised user",
+        success: false,
+        status: 401,
+      });
+    }
+
     if (!id) {
       return ApiResponse({
         message: "Snippet id is required",
@@ -190,7 +207,7 @@ export async function PATCH(req: NextRequest) {
     const snippet = await prisma.snippets.findUnique({
       where: {
         id,
-        user: { id: user?.id },
+        user: { id: user.id },
       },
     });
 
@@ -209,14 +226,14 @@ export async function PATCH(req: NextRequest) {
         message: "Invalid data",
         success: false,
         error: z.treeifyError(checkBody.error),
-        status: 500,
+        status: 400,
       });
     }
     const data = checkBody.data;
 
     await prisma.snippets.update({
       where: {
-        userId: user?.id,
+        userId: user.id,
         id: snippet.id,
       },
       data: {

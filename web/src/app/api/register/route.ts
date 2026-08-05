@@ -1,11 +1,7 @@
-import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { ApiResponse } from "@/utils/formatResponse";
-import jwt from "jsonwebtoken";
 import { registerSchema } from "@/types/zod-schemas";
-import { API_SECRET } from "@/lib/config";
 
 export async function POST(req: Request) {
   try {
@@ -16,7 +12,7 @@ export async function POST(req: Request) {
     if (!parsedData.success) {
       return ApiResponse({
         message: "Invalid data",
-        status: 500,
+        status: 400,
         success: false,
       });
     }
@@ -41,8 +37,7 @@ export async function POST(req: Request) {
       data: {
         name,
         email,
-        provider: "GOOGLE",
-        apiKey: "",
+        provider: "CREDENTIALS",
         password: hashedPassword,
       },
     });

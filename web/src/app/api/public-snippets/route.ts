@@ -8,7 +8,8 @@ export async function GET(req: NextRequest) {
   try {
     const session = await checkSession();
     const { searchParams } = new URL(req.url);
-    const p = searchParams.get("p") ?? "";
+    const PAGE_SIZE = 5;
+    const page = Math.max(1, Number(searchParams.get("p")) || 1);
 
     if (!session) {
       return ApiResponse({
@@ -25,6 +26,9 @@ export async function GET(req: NextRequest) {
           is: {},
         },
       },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         title: true,
@@ -50,7 +54,6 @@ export async function GET(req: NextRequest) {
           },
         },
       },
-      take: 5,
     });
 
     const result = snippets.map((snippet) => ({

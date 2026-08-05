@@ -97,7 +97,10 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="w-full bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 relative overflow-hidden transition-colors">
+    <footer
+      id="footer"
+      className="w-full bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 relative overflow-hidden transition-colors"
+    >
       {/* Background effects */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#eee_1px,transparent_1px),linear-gradient(to_bottom,#eee_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
       <div className="absolute inset-0 bg-gradient-to-t from-blue-100/10 via-transparent to-transparent dark:from-blue-500/5" />

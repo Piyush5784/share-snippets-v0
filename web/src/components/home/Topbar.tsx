@@ -18,8 +18,8 @@ import { Session } from "next-auth";
 
 const navItems = [
   { name: "Features", link: "#features" },
-  { name: "Pricing", link: "#pricing" },
-  { name: "Contact", link: "#contact" },
+  { name: "Login", link: "/pages/login" },
+  { name: "Contact", link: "#footer" },
 ];
 
 const Topbar = ({ session }: { session: Session | null }) => {

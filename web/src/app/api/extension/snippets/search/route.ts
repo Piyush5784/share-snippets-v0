@@ -1,13 +1,12 @@
 import { ApiResponse } from "@/utils/formatResponse";
 import { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
-import { API_SECRET } from "@/lib/config";
 import { prisma } from "@/lib/db";
+import { verifyApiKey } from "@/lib/apiKeyAuth";
 
 // all public snippets + personal user snippets according to token and optional title query
 export async function GET(req: NextRequest) {
   try {
-    const token = req.nextUrl.searchParams.get("token");
+    const token = req.headers.get("Authorization");
     const title = req.nextUrl.searchParams.get("title");
 
     if (!token) {
@@ -18,11 +17,18 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const parsedData = jwt.verify(token, API_SECRET);
-    const { id } = parsedData as { id: string; email: string };
+    const user = await verifyApiKey(token);
+
+    if (!user) {
+      return ApiResponse({
+        message: "Invalid or revoked API key",
+        success: false,
+        status: 401,
+      });
+    }
 
     const publicCondition: any = { isPublic: true };
-    const privateCondition: any = { userId: id };
+    const privateCondition: any = { userId: user.id };
 
     if (title) {
       publicCondition.title = { contains: title, mode: "insensitive" };
@@ -64,7 +70,7 @@ export async function GET(req: NextRequest) {
       message:
         error instanceof Error ? error.message : "failed to fetch snippets",
       success: false,
-      status: 500,
+      status: 401,
     });
   }
 }

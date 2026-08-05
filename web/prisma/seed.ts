@@ -95,10 +95,16 @@ async function main() {
         password: "$2a$13$hashedpassword", // Placeholder hashed password
         image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.name}`,
         provider: "CREDENTIALS",
-        apiKey: generateApiKey(),
       },
       update: {},
     });
+
+    await prisma.apiKey.upsert({
+      where: { userId: user.id },
+      create: { userId: user.id, key: generateApiKey() },
+      update: {},
+    });
+
     createdUsers.push(user);
     console.log(`✅ User created: ${user.name} (${userData.country})`);
   }
