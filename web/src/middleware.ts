@@ -1,21 +1,43 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { RateLimiterMemory } from "rate-limiter-flexible";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 import { NEXTAUTH_SECRET } from "./lib/config";
 
-const generalRateLimiter = new RateLimiterMemory({
-  points: 120, // requests
-  duration: 60, // per 60s
-});
-const registerRateLimiter = new RateLimiterMemory({
-  points: 5, // requests
-  duration: 600, // per 10 minutes
-});
+const redis =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? Redis.fromEnv()
+    : null;
 
-const extensionRateLimiter = new RateLimiterMemory({
-  points: 60, // requests
-  duration: 60, // per 60s
-});
+if (!redis && process.env.NODE_ENV !== "test") {
+  console.warn(
+    "[middleware] UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN not set - rate limiting is disabled."
+  );
+}
+
+const generalRateLimiter = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(120, "60 s"),
+      prefix: "ratelimit:general",
+    })
+  : null;
+
+const registerRateLimiter = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, "600 s"),
+      prefix: "ratelimit:register",
+    })
+  : null;
+
+const extensionRateLimiter = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(60, "60 s"),
+      prefix: "ratelimit:extension",
+    })
+  : null;
 
 function getClientIp(req: NextRequest): string {
   const forwarded = req.headers.get("x-forwarded-for");
@@ -24,23 +46,23 @@ function getClientIp(req: NextRequest): string {
 }
 
 async function checkRateLimit(
-  limiter: RateLimiterMemory,
+  limiter: Ratelimit | null,
   key: string
 ): Promise<NextResponse | null> {
-  try {
-    await limiter.consume(key);
-    return null;
-  } catch (rateLimitInfo: any) {
-    return NextResponse.json(
-      { message: "Too many requests - please slow down.", success: false },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(Math.ceil((rateLimitInfo?.msBeforeNext ?? 60000) / 1000)),
-        },
-      }
-    );
-  }
+  if (!limiter) return null; // no Redis configured - fail open, not closed
+
+  const result = await limiter.limit(key);
+  if (result.success) return null;
+
+  return NextResponse.json(
+    { message: "Too many requests - please slow down.", success: false },
+    {
+      status: 429,
+      headers: {
+        "Retry-After": String(Math.max(0, Math.ceil((result.reset - Date.now()) / 1000))),
+      },
+    }
+  );
 }
 
 const publicRoutes = [
@@ -102,7 +124,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  runtime: "nodejs",
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",

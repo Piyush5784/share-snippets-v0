@@ -11,3 +11,6 @@ process.env.GOOGLE_CLIENT_SECRET ??= "test-google-client-secret";
 process.env.GITHUB_CLIENT_ID ??= "test-github-client-id";
 process.env.GITHUB_CLIENT_SECRET ??= "test-github-client-secret";
 process.env.BACKEND_URL ??= "http://localhost:3000";
+
+process.env.UPSTASH_REDIS_REST_URL ??= "https://test.upstash.io";
+process.env.UPSTASH_REDIS_REST_TOKEN ??= "test-upstash-token";

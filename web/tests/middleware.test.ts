@@ -1,14 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
 import { NextRequest } from "next/server";
+import "./helpers/upstashMock";
 
 vi.mock("next-auth/jwt", () => ({ getToken: vi.fn().mockResolvedValue(null) }));
 
 const { middleware } = await import("@/middleware");
 
-// The general rate limiter is keyed by IP and shared across every request
-// middleware sees. Give each test (unless it's deliberately reusing one to
-// test the limiter itself) its own fake IP so tests can't bleed into each
-// other's budget.
+
 let ipCounter = 0;
 function nextIp() {
   ipCounter += 1;
