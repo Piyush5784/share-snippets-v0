@@ -108,19 +108,19 @@ export const nextAuthOptions: NextAuthOptions = {
           );
         }
 
-        const existingUser = await prisma.user.findUnique({ where: { email } });
+        let dbUser = await prisma.user.findUnique({ where: { email } });
 
-        if (!existingUser) {
-          await prisma.user.create({
+        if (!dbUser) {
+          dbUser = await prisma.user.create({
             data: {
               email,
               image: user.image as string,
               name: user.name as string,
-              provider:
-                account.provider === "google" ? "GOOGLE" : "CREDENTIALS",
+              provider: account.provider === "google" ? "GOOGLE" : "GITHUB",
             },
           });
         }
+        user.id = dbUser.id;
 
         return true;
       }

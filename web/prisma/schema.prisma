@@ -9,6 +9,7 @@ datasource db {
 
 enum Provider  {
   GOOGLE
+  GITHUB
   CREDENTIALS
 }
 
@@ -17,15 +18,29 @@ model User {
   email         String    @unique
   name          String?
   image         String?
-  password      String? 
+  password      String?
   provider      Provider?   @default(CREDENTIALS)
 
   snippets        Snippets[]
   starredSnippets StarredSnippets[] @relation("UserStars")
   authoredStars   StarredSnippets[] @relation("AuthoredStars")
-  apiKey          String?           @unique
+  apiKey          ApiKey?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Split out from User rather than a nullable `apiKey String? @unique` field:
+// on MongoDB a non-sparse unique index treats every document missing the
+// field (or holding an explicit null) as colliding with every other such
+// document, so a second user without a key yet would fail to be created.
+// Only users who've actually generated a key get a row here, so the unique
+// index never has to deal with "no key" at all.
+model ApiKey {
+  id        String   @id @default(uuid()) @map("_id")
+  key       String   @unique
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 
@@ -42,15 +57,24 @@ model Snippets {
   starredBy   StarredSnippets[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([isPublic])
 }
+
+
 model StarredSnippets {
   id          String    @id @default(uuid()) @map("_id")
   snippetId   String
   userId      String
-  authorId    String   
-  author      User      @relation("AuthoredStars", fields: [authorId], references: [id])
+  authorId    String
+  author      User      @relation("AuthoredStars", fields: [authorId], references: [id], onDelete: Cascade)
   isStarred   Boolean   @default(true)
-  snippet     Snippets  @relation(fields: [snippetId], references: [id])
-  user        User      @relation("UserStars", fields: [userId], references: [id])
+  snippet     Snippets  @relation(fields: [snippetId], references: [id], onDelete: Cascade)
+  user        User      @relation("UserStars", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, snippetId])
+  @@index([snippetId])
+  @@index([authorId])
 }
 

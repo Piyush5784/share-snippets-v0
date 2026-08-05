@@ -1,15 +1,12 @@
 import { ApiResponse } from "@/utils/formatResponse";
 import { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
-import { API_SECRET } from "@/lib/config";
-import { prisma } from "@/lib/db";
+import { verifyApiKey } from "@/lib/apiKeyAuth";
 
 //validate api key
 export async function GET(req: NextRequest) {
   try {
     const token = req.headers.get("Authorization");
 
-    console.log(token);
     if (!token) {
       return ApiResponse({
         message: "Unauthorised user",
@@ -18,14 +15,11 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    console.log(token);
+    const user = await verifyApiKey(token);
 
-    const parsedData = jwt.verify(token, API_SECRET);
-    const { id, email } = parsedData as { id: string; email: string };
-
-    if (!id || !email) {
+    if (!user) {
       return ApiResponse({
-        message: "Invalid user",
+        message: "Invalid or revoked API key",
         success: false,
         status: 401,
       });
@@ -39,7 +33,7 @@ export async function GET(req: NextRequest) {
     return ApiResponse({
       message: error instanceof Error ? error.message : "Invalid Api key",
       success: false,
-      status: 500,
+      status: 401,
     });
   }
 }

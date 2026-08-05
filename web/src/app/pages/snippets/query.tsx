@@ -76,6 +76,21 @@ export const useGetSnippetsById = (id: string) => {
   });
 };
 
+export const useGetPublicSnippetById = (id: string) => {
+  return useQuery({
+    queryKey: ["get_public_snippet_by_id", id],
+    queryFn: async () => {
+      try {
+        const res = await axios.get(`/api/public-snippets/${id}`);
+        return res.data.data as snippetsType;
+      } catch (error) {
+        return null;
+      }
+    },
+    enabled: !!id,
+  });
+};
+
 export const useGetSavedSnippets = () => {
   return useQuery({
     queryKey: ["get_saved_snippets"],

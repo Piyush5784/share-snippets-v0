@@ -1,16 +1,12 @@
-import { nextAuthOptions } from "@/lib/auth";
 import { ApiResponse } from "@/utils/formatResponse";
-import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/db";
-import { checkSession, checkUser } from "@/app/actions/checkUser";
+import { checkUser } from "@/app/actions/checkUser";
 import jwt from "jsonwebtoken";
 import { API_SECRET } from "@/lib/config";
 
 export async function GET() {
   try {
     const session = await checkUser();
-
-    console.log(session);
 
     if (!session) {
       return ApiResponse({
@@ -24,6 +20,7 @@ export async function GET() {
       where: {
         email: session.email,
       },
+      include: { apiKey: true },
     });
 
     if (!user) {
@@ -34,17 +31,17 @@ export async function GET() {
       });
     }
 
-    if (!user?.apiKey) {
-      console.log("New key generated");
+    if (!user.apiKey) {
       const newApiKey = jwt.sign(
         { id: user.id, email: user.email },
-        API_SECRET
+        API_SECRET,
+        { expiresIn: "90d" }
       );
 
-      await prisma.user.update({
-        where: { email: user.email },
+      await prisma.apiKey.create({
         data: {
-          apiKey: newApiKey,
+          key: newApiKey,
+          userId: user.id,
         },
       });
 
@@ -59,7 +56,7 @@ export async function GET() {
     return ApiResponse({
       message: "Api key fetched successfully",
       success: true,
-      data: user.apiKey,
+      data: user.apiKey.key,
       status: 200,
     });
   } catch (error) {

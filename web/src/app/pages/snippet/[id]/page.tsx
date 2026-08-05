@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CopyButton } from "@/components/custom/copy-button";
 import { BACKEND_URL } from "@/lib/config";
-import { useGetSnippetsById } from "../../snippets/query";
+import { useGetPublicSnippetById } from "../../snippets/query";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/custom/ShareButtont";
 
@@ -16,7 +16,7 @@ const Page = () => {
   const { theme } = useTheme();
   const router = useRouter();
 
-  const { data, isPending, isError, error } = useGetSnippetsById(
+  const { data, isPending, isError, error } = useGetPublicSnippetById(
     typeof id === "string" ? id : ""
   );
 
