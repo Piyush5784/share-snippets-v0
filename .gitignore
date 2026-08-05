@@ -17,7 +17,7 @@ DEPLOYMENT.md
 temp.ts
 .next/
 
-
+dist
 out
 node_modules
 
