@@ -1,39 +1,11 @@
 import { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
-import {
-  GITHUB_CLIENT_ID,
-  GITHUB_CLIENT_SECRET,
-  GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET,
-  NEXTAUTH_SECRET,
-} from "./config";
+import { NEXTAUTH_SECRET } from "./config";
 
 export const nextAuthOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
-      httpOptions: {
-        timeout: 10000,
-      },
-    }),
-
-    GitHubProvider({
-      clientId: GITHUB_CLIENT_ID,
-      clientSecret: GITHUB_CLIENT_SECRET,
-    }),
-
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -97,33 +69,9 @@ export const nextAuthOptions: NextAuthOptions = {
       }
       return token;
     },
-    async signIn({ account, user }) {
-      // Handle OAuth providers (Google, GitHub)
-      if (account?.provider === "google" || account?.provider === "github") {
-        const email = user.email;
-
-        if (!email) {
-          throw new Error(
-            JSON.stringify({ error: "Invalid email", status: false })
-          );
-        }
-
-        let dbUser = await prisma.user.findUnique({ where: { email } });
-
-        if (!dbUser) {
-          dbUser = await prisma.user.create({
-            data: {
-              email,
-              image: user.image as string,
-              name: user.name as string,
-              provider: account.provider === "google" ? "GOOGLE" : "GITHUB",
-            },
-          });
-        }
-        user.id = dbUser.id;
-
-        return true;
-      }
+    async signIn() {
+      // No OAuth providers are configured; CredentialsProvider handles its
+      // own validation in `authorize` above.
       return true;
     },
     async session({ session, token }) {

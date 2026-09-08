@@ -7,9 +7,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import { FaGithub } from "react-icons/fa";
 import { AuthErrorHandler } from "@/components/custom/error-handler";
 import Topbar from "@/components/home/Topbar";
 import { Session } from "next-auth";
@@ -68,11 +66,6 @@ export default function RegisterPage({ session }: { session: Session | null }) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleOAuthSignIn = async (provider: "google" | "github") => {
-    setLoading(true);
-    await signIn(provider, { callbackUrl: "/pages/snippets" });
   };
 
   return (
@@ -147,39 +140,6 @@ export default function RegisterPage({ session }: { session: Session | null }) {
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Creating account..." : "Create account"}
           </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500 dark:bg-gray-950">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={() => handleOAuthSignIn("google")}
-            disabled={loading}
-          >
-            <FcGoogle />
-            Sign up with Google
-          </Button>
-
-          {/* <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={() => handleOAuthSignIn("github")}
-            disabled={loading}
-          >
-            <FaGithub />
-            Sign up with Github
-          </Button> */}
         </form>
 
         <div className="text-center text-sm">

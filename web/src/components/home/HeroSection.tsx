@@ -215,7 +215,7 @@ const HeroSection = () => {
               >
                 Join thousands of developers sharing code.{" "}
                 <span className="text-blue-600 dark:text-blue-400 font-medium">
-                  Sign in with Google, GitHub, or email
+                  Sign in with email
                 </span>{" "}
                 • Get your API key • Install the extension • Access anywhere
               </motion.p>

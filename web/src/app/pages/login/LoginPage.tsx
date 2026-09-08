@@ -8,10 +8,8 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CircleUserRound } from "lucide-react";
-import { FaGithub } from "react-icons/fa";
 import { AuthErrorHandler } from "@/components/custom/error-handler";
 import Topbar from "@/components/home/Topbar";
-import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import { Session } from "next-auth";
 import { PasswordInput } from "@/components/custom/password-input";
@@ -55,11 +53,6 @@ export default function LoginPage({ session }: { session: Session | null }) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleOAuthSignIn = async (provider: "google" | "github") => {
-    setLoading(true);
-    await signIn(provider, { callbackUrl: "/pages/snippets", redirect: false });
   };
 
   return (
@@ -114,42 +107,6 @@ export default function LoginPage({ session }: { session: Session | null }) {
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Loading..." : "Login"}
           </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500 dark:bg-gray-950">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={() => handleOAuthSignIn("google")}
-            disabled={loading}
-          >
-            <FcGoogle />
-            Login with Google
-          </Button>
-          {/*
-          {/* <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={() => handleOAuthSignIn("github")}
-            disabled={loading}
-            asChild
-          >
-            <div>
-              <FaGithub className="" />
-              Login with Github
-            </div>
-          </Button> */}
         </form>
 
         <div className="text-center text-sm">
